@@ -12,7 +12,7 @@ use Crater\Models\CompanySetting;
 use Illuminate\Support\Facades\App;
 use Crater\Http\Controllers\Controller;
 
-class ExpensesReportController extends Controller
+class ItemExpensesReportController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -31,32 +31,14 @@ class ExpensesReportController extends Controller
 
         App::setLocale($locale);
 
-        $showIndividualItems = $request->show_individual_items == 'true' ? true : false;
-        $showIndividualItems = true;    // for testing
+        $expenses = Expense::with('category')
+            ->whereCompanyId($company->id)
+            ->applyFilters($request->only(['from_date', 'to_date']))
+            ->get();
 
-        $expenses = [];
-        $expenseCategories = [];
         $totalAmount = 0;
-
-        if ($showIndividualItems == true) {
-            $expenses = Expense::with('category')
-                ->whereCompanyId($company->id)
-                ->applyFilters($request->only(['from_date', 'to_date']))
-                ->get();
-
-            foreach ($expenses as $expense) {
-                $totalAmount += $expense->amount;
-            }
-        } else {
-            $expenseCategories = Expense::with('category')
-                ->whereCompanyId($company->id)
-                ->applyFilters($request->only(['from_date', 'to_date']))
-                ->expensesAttributes()
-                ->get();
-
-            foreach ($expenseCategories as $category) {
-                $totalAmount += $category->total_amount;
-            }
+        foreach ($expenses as $expense) {
+            $totalAmount += $expense->amount;
         }
 
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $company->id);
@@ -79,14 +61,10 @@ class ExpensesReportController extends Controller
             ->whereCompany($company->id)
             ->get();
 
-        $reportName = 'app.pdf.reports.expenses';
-        if ($showIndividualItems) {
-            $reportName = 'app.pdf.reports.expenses-individual';
-        }
+        $reportName = 'app.pdf.reports.expenses-individual';
 
         view()->share([
             'expenses' => $expenses,
-            'expenseCategories' => $expenseCategories,
             'colorSettings' => $colorSettings,
             'totalExpense' => $totalAmount,
             'company' => $company,
