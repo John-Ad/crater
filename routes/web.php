@@ -2,8 +2,9 @@
 
 use Crater\Http\Controllers\V1\Admin\Auth\LoginController;
 use Crater\Http\Controllers\V1\Admin\Expense\ShowReceiptController;
+use Crater\Http\Controllers\V1\Admin\Report\CategoryExpensesReportController;
 use Crater\Http\Controllers\V1\Admin\Report\CustomerSalesReportController;
-use Crater\Http\Controllers\V1\Admin\Report\ExpensesReportController;
+use Crater\Http\Controllers\V1\Admin\Report\ItemExpensesReportController;
 use Crater\Http\Controllers\V1\Admin\Report\ItemSalesReportController;
 use Crater\Http\Controllers\V1\Admin\Report\ProfitLossReportController;
 use Crater\Http\Controllers\V1\Admin\Report\TaxSummaryReportController;
@@ -61,9 +62,13 @@ Route::middleware('auth:sanctum')->prefix('reports')->group(function () {
     //----------------------------------
     Route::get('/sales/items/{hash}', ItemSalesReportController::class);
 
-    // report for expenses
+    // report for expenses by category
     //----------------------------------
-    Route::get('/expenses/{hash}', ExpensesReportController::class);
+    Route::get('/expenses/categories/{hash}', CategoryExpensesReportController::class);
+
+    // report for expenses by item
+    //----------------------------------
+    Route::get('/expenses/items/{hash}', ItemExpensesReportController::class);
 
     // report for tax summary
     //----------------------------------

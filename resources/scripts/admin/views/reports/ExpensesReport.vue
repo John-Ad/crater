@@ -1,19 +1,9 @@
 <template>
   <div class="grid gap-8 md:grid-cols-12 pt-10">
     <div class="col-span-8 md:col-span-4">
-      <BaseInputGroup
-        :label="$t('reports.sales.date_range')"
-        class="col-span-12 md:col-span-8"
-      >
-        <BaseMultiselect
-          v-model="selectedRange"
-          :options="dateRange"
-          value-prop="key"
-          track-by="key"
-          label="label"
-          object
-          @update:modelValue="onChangeDateRange"
-        />
+      <BaseInputGroup :label="$t('reports.sales.date_range')" class="col-span-12 md:col-span-8">
+        <BaseMultiselect v-model="selectedRange" :options="dateRange" value-prop="key" track-by="key" label="label" object
+          @update:modelValue="onChangeDateRange" />
       </BaseInputGroup>
 
       <div class="flex flex-col mt-6 lg:space-x-3 lg:flex-row">
@@ -21,48 +11,44 @@
           <BaseDatePicker v-model="formData.from_date" />
         </BaseInputGroup>
 
-        <div
-          class="
+        <div class="
             hidden
             w-5
             h-0
             mx-4
             border border-gray-400 border-solid
             xl:block
-          "
-          style="margin-top: 2.5rem"
-        />
+          " style="margin-top: 2.5rem" />
 
         <BaseInputGroup :label="$t('reports.expenses.to_date')">
           <BaseDatePicker v-model="formData.to_date" />
         </BaseInputGroup>
       </div>
 
-      <BaseButton
-        variant="primary-outline"
-        class="content-center hidden mt-0 w-md md:flex md:mt-8"
-        type="submit"
-        @click.prevent="getReports"
-      >
+      <div class="flex flex-col mt-6 lg:space-x-3 lg:flex-row">
+        <BaseInputGroup :label="$t('reports.sales.report_type')" class="col-span-12 md:col-span-8">
+          <BaseMultiselect v-model="selectedType" :options="reportTypes" :placeholder="$t('reports.sales.report_type')"
+            class="mt-1" @update:modelValue="getInitialReport" />
+        </BaseInputGroup>
+      </div>
+
+      <BaseButton variant="primary-outline" class="content-center hidden mt-0 w-md md:flex md:mt-8" type="submit"
+        @click.prevent="getReports">
         {{ $t('reports.update_report') }}
       </BaseButton>
     </div>
 
     <div class="col-span-8">
-      <iframe
-        :src="getReportUrl"
-        class="
+      <iframe :src="getReportUrl" class="
           hidden
           w-full
           h-screen
           border-gray-100 border-solid
           rounded
           md:flex
-        "
-      />
+        " />
 
-      <a
-        class="
+      <a class="
           flex
           items-center
           justify-center
@@ -78,9 +64,7 @@
           md:hidden
           bg-primary-500
           cursor-pointer
-        "
-        @click="viewReportsPDF"
-      >
+        " @click="viewReportsPDF">
         <BaseIcon name="DocumentTextIcon" class="h-5 mr-2" />
         <span>{{ $t('reports.view_pdf') }}</span>
       </a>
@@ -143,10 +127,15 @@ const dateRange = reactive([
   },
 ])
 
+const reportTypes = ref(['By Category', 'By Item'])
+const selectedType = ref('By Category')
+
 const selectedRange = ref(dateRange[2])
 let range = ref(new Date())
 let url = ref(null)
-let siteURL = ref(null)
+// let siteURL = ref(null)
+let categorySiteURL = ref(null)
+let itemsSiteURL = ref(null)
 
 const formData = reactive({
   from_date: moment().startOf('month').toString(),
@@ -161,15 +150,34 @@ const getSelectedCompany = computed(() => {
   return companyStore.selectedCompany
 })
 
-const dateRangeUrl = computed(() => {
-  return `${siteURL.value}?from_date=${moment(formData.from_date).format(
+// const dateRangeUrl = computed(() => {
+//   return `${siteURL.value}?from_date=${moment(formData.from_date).format(
+//     'YYYY-MM-DD'
+//   )}&to_date=${moment(formData.to_date).format('YYYY-MM-DD')}&show_individual_expenses=${formData.show_individual_expenses}`
+// })
+
+const categoryDateRangeUrl = computed(() => {
+  return `${categorySiteURL.value}?from_date=${moment(
+    formData.from_date
+  ).format('YYYY-MM-DD')}&to_date=${moment(formData.to_date).format(
+    'YYYY-MM-DD'
+  )}`
+})
+
+const itemDaterangeUrl = computed(() => {
+  return `${itemsSiteURL.value}?from_date=${moment(formData.from_date).format(
     'YYYY-MM-DD'
   )}&to_date=${moment(formData.to_date).format('YYYY-MM-DD')}`
 })
 
+
 onMounted(() => {
-  siteURL.value = `/reports/expenses/${getSelectedCompany.value.unique_hash}`
-  url.value = dateRangeUrl.value
+  // siteURL.value = `/reports/expenses/${getSelectedCompany.value.unique_hash}`
+  // url.value = dateRangeUrl.value
+
+  categorySiteURL.value = `/reports/expenses/categories/${getSelectedCompany.value.unique_hash}`
+  itemsSiteURL.value = `/reports/expenses/items/${getSelectedCompany.value.unique_hash}`
+  getInitialReport()
 })
 
 watch(
@@ -242,6 +250,15 @@ function onChangeDateRange() {
   }
 }
 
+async function getInitialReport() {
+  if (selectedType.value === 'By Category') {
+    url.value = categoryDateRangeUrl.value
+    return true
+  }
+  url.value = itemDaterangeUrl.value
+  return true
+}
+
 async function viewReportsPDF() {
   let data = await getReports()
   window.open(getReportUrl.value, '_blank')
@@ -249,7 +266,11 @@ async function viewReportsPDF() {
 }
 
 function getReports() {
-  url.value = dateRangeUrl.value
+  if (selectedType.value === 'By Category') {
+    url.value = categoryDateRangeUrl.value
+    return true
+  }
+  url.value = itemDaterangeUrl.value
   return true
 }
 

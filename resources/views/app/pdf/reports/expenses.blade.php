@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>@lang('pdf_expense_report_label')</title>
+    <title>@lang('pdf_expense_by_category_report_label')</title>
     <style type="text/css">
         body {
             font-family: "DejaVu Sans";
@@ -136,7 +136,7 @@
     </style>
 
     @if (App::isLocale('th'))
-    @include('app.pdf.locale.th')
+        @include('app.pdf.locale.th')
     @endif
 </head>
 
@@ -153,7 +153,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <p class="sub-heading-text">@lang('pdf_expense_report_label')</p>
+                    <p class="sub-heading-text">@lang('pdf_expense_by_category_report_label')</p>
                 </td>
             </tr>
         </table>
@@ -161,18 +161,18 @@
         <div class="expenses-table-container">
             <table class="expenses-table">
                 @foreach ($expenseCategories as $expenseCategory)
-                <tr>
-                    <td>
-                        <p class="expense-title">
-                            {{ $expenseCategory->category->name }}
-                        </p>
-                    </td>
-                    <td>
-                        <p class="expense-amount">
-                            {!! format_money_pdf($expenseCategory->total_amount, $currency) !!}
-                        </p>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            <p class="expense-title">
+                                {{ $expenseCategory->category->name }}
+                            </p>
+                        </td>
+                        <td>
+                            <p class="expense-amount">
+                                {!! format_money_pdf($expenseCategory->total_amount, $currency) !!}
+                            </p>
+                        </td>
+                    </tr>
                 @endforeach
             </table>
         </div>
