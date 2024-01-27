@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>@lang('pdf_expense_report_label')</title>
+    <title>@lang('pdf_expense_by_category_report_label')</title>
     <style type="text/css">
         body {
             font-family: "DejaVu Sans";
@@ -64,6 +64,24 @@
         .expenses-table {
             width: 100%;
             padding-bottom: 10px;
+        }
+
+        .expense-header {
+            text-align: left;
+            padding: 0px;
+            margin: 0px;
+            font-size: 14px;
+            line-height: 21px;
+            color: #A5ACC1;
+        }
+
+        .expense-amount-header {
+            text-align: right;
+            padding: 0px;
+            margin: 0px;
+            font-size: 14px;
+            line-height: 21px;
+            color: #A5ACC1;
         }
 
         .expense-title {
@@ -153,7 +171,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <p class="sub-heading-text">@lang('pdf_expense_report_label')</p>
+                    <p class="sub-heading-text">@lang('pdf_expense_by_item_report_label')</p>
                 </td>
             </tr>
         </table>
@@ -161,10 +179,10 @@
         <div class="expenses-table-container">
             <table class="expenses-table">
                 <thead>
-                    <th>Date</th>
-                    <th>Category</th>
-                    <th>Notes</th>
-                    <th>Amount</th>
+                    <th class="expense-header">Date</th>
+                    <th class="expense-header">Category</th>
+                    <th class="expense-header">Notes</th>
+                    <th class="expense-amount-header">Amount</th>
                 </thead>
                 @foreach ($expenses as $expense)
                     <tr>
