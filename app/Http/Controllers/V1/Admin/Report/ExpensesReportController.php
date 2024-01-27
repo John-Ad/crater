@@ -27,18 +27,36 @@ class ExpensesReportController extends Controller
 
         $this->authorize('view report', $company);
 
-        $locale = CompanySetting::getSetting('language',  $company->id);
+        $locale = CompanySetting::getSetting('language', $company->id);
 
         App::setLocale($locale);
 
-        $expenseCategories = Expense::with('category')
-            ->whereCompanyId($company->id)
-            ->applyFilters($request->only(['from_date', 'to_date']))
-            ->expensesAttributes()
-            ->get();
+        $showIndividualItems = $request->show_individual_items == 'true' ? true : false;
+        $showIndividualItems = true;    // for testing
+
+        $expenses = [];
+        $expenseCategories = [];
         $totalAmount = 0;
-        foreach ($expenseCategories as $category) {
-            $totalAmount += $category->total_amount;
+
+        if ($showIndividualItems == true) {
+            $expenses = Expense::with('category')
+                ->whereCompanyId($company->id)
+                ->applyFilters($request->only(['from_date', 'to_date']))
+                ->get();
+
+            foreach ($expenses as $expense) {
+                $totalAmount += $expense->amount;
+            }
+        } else {
+            $expenseCategories = Expense::with('category')
+                ->whereCompanyId($company->id)
+                ->applyFilters($request->only(['from_date', 'to_date']))
+                ->expensesAttributes()
+                ->get();
+
+            foreach ($expenseCategories as $category) {
+                $totalAmount += $category->total_amount;
+            }
         }
 
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $company->id);
@@ -61,7 +79,13 @@ class ExpensesReportController extends Controller
             ->whereCompany($company->id)
             ->get();
 
+        $reportName = 'app.pdf.reports.expenses';
+        if ($showIndividualItems) {
+            $reportName = 'app.pdf.reports.expenses-individual';
+        }
+
         view()->share([
+            'expenses' => $expenses,
             'expenseCategories' => $expenseCategories,
             'colorSettings' => $colorSettings,
             'totalExpense' => $totalAmount,
@@ -70,10 +94,10 @@ class ExpensesReportController extends Controller
             'to_date' => $to_date,
             'currency' => $currency,
         ]);
-        $pdf = PDF::loadView('app.pdf.reports.expenses');
+        $pdf = PDF::loadView($reportName);
 
         if ($request->has('preview')) {
-            return view('app.pdf.reports.expenses');
+            return view($reportName);
         }
 
         if ($request->has('download')) {
