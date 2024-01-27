@@ -34,6 +34,7 @@ class ItemExpensesReportController extends Controller
         $expenses = Expense::with('category')
             ->whereCompanyId($company->id)
             ->applyFilters($request->only(['from_date', 'to_date']))
+            ->orderByDesc('expense_date')
             ->get();
 
         $totalAmount = 0;
