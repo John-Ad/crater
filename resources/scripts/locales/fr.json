@@ -738,6 +738,7 @@
     "paid": "Payé",
     "unpaid": "Non payé",
     "download_pdf": "Télécharger le PDF",
+    "download_csv": "Télécharger le CSV",
     "view_pdf": "Afficher le PDF",
     "update_report": "Actualiser",
     "report": "Rapport | Rapports",

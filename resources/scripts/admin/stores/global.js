@@ -35,7 +35,9 @@ export const useGlobalStore = (useWindow = false) => {
       isSidebarOpen: false,
       areCurrenciesLoading: false,
 
-      downloadReport: null,
+      // download reports
+      downloadReportPDF: null,
+      downloadReportCSV: null,
     }),
 
     getters: {
@@ -70,8 +72,8 @@ export const useGlobalStore = (useWindow = false) => {
               moduleStore.apiToken = response.data.global_settings.api_token
               moduleStore.enableModules = response.data.modules
 
-                // company store
-                companyStore.companies = response.data.companies
+              // company store
+              companyStore.companies = response.data.companies
               companyStore.selectedCompany = response.data.current_company
               companyStore.setSelectedCompany(response.data.current_company)
               companyStore.selectedCompanySettings =

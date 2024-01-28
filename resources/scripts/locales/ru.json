@@ -738,6 +738,7 @@
     "paid": "Оплачен",
     "unpaid": "Неоплачен",
     "download_pdf": "Скачать PDF",
+    "download_csv": "Скачать CSV",
     "view_pdf": "Показать PDF",
     "update_report": "Обновить отчёт",
     "report": "Отчёт | Отчёты",

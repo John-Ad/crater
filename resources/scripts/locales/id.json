@@ -738,6 +738,7 @@
     "paid": "Lunas",
     "unpaid": "Belum dibayar",
     "download_pdf": "Download PDF",
+    "download_csv": "Download CSV",
     "view_pdf": "Lihat PDF",
     "update_report": "Update Laporan",
     "report": "Laporan | Laporan",

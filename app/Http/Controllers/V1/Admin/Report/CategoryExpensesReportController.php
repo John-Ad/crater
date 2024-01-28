@@ -8,6 +8,7 @@ use Crater\Models\Company;
 use Crater\Models\Expense;
 use Crater\Models\Currency;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Crater\Models\CompanySetting;
 use Illuminate\Support\Facades\App;
 use Crater\Http\Controllers\Controller;
@@ -47,6 +48,11 @@ class CategoryExpensesReportController extends Controller
         $to_date = Carbon::createFromFormat('Y-m-d', $request->to_date)->format($dateFormat);
         $currency = Currency::findOrFail(CompanySetting::getSetting('currency', $company->id));
 
+        // download csv
+        if ($request->has('download') && $request->has("csv")) {
+            return $this->downloadCSV($expenseCategories, $from_date, $to_date, $totalAmount, $currency, $company);
+        }
+
         $colors = [
             'primary_text_color',
             'heading_text_color',
@@ -84,5 +90,42 @@ class CategoryExpensesReportController extends Controller
         }
 
         return $pdf->stream();
+    }
+
+    /**
+     * Creates CSV file for download
+     * 
+     * @param array[] $expenseCategories
+     * @param string $from_date
+     * @param string $to_date
+     * @param float $totalAmount
+     * @param Currency $currency
+     * @param Company $company
+     * @return \Illuminate\Support\Facades\Response
+     */
+    private function downloadCSV($expenseCategories, $from_date, $to_date, $totalAmount, $currency, $company)
+    {
+        $csvFileName = 'expensesByCategory.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
+        ];
+
+        $handle = fopen('php://output', 'w');
+        fputcsv($handle, [$company->name, '']);
+        fputcsv($handle, [trans('pdf_expense_by_category_report_label'), $from_date . ' - ' . $to_date]);
+        fputcsv($handle, ['', '']);
+        fputcsv($handle, ['Category', 'Total Amount']);
+
+        foreach ($expenseCategories as $expenseCategory) {
+            fputcsv($handle, [$expenseCategory->category->name, format_money($expenseCategory->total_amount, $currency)]);
+        }
+
+        fputcsv($handle, ['----', '----']);
+        fputcsv($handle, ['Total', format_money($totalAmount, $currency)]);
+
+        fclose($handle);
+
+        return Response::make('', 200, $headers);
     }
 }

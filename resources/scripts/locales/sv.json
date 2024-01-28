@@ -738,6 +738,7 @@
     "paid": "Betald",
     "unpaid": "Obetald",
     "download_pdf": "Ladda ner PDF",
+    "download_csv": "Ladda ner CSV",
     "view_pdf": "Visa PDF",
     "update_report": "Uppdatera rapport",
     "report": "Rapport | Rapporter",

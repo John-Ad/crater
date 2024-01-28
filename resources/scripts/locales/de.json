@@ -738,6 +738,7 @@
     "paid": "Bezahlt",
     "unpaid": "Unbezahlt",
     "download_pdf": "PDF herunterladen",
+    "download_csv": "CSV herunterladen",
     "view_pdf": "PDF anzeigen",
     "update_report": "Bericht aktualisieren",
     "report": "Bericht | Berichte",

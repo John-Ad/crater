@@ -82,7 +82,8 @@ const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
 const { t } = useI18n()
 
-globalStore.downloadReport = downloadReport
+globalStore.downloadReportPDF = downloadReportPDF
+globalStore.downloadReportCSV = downloadReportCSV
 
 const dateRange = reactive([
   {
@@ -150,11 +151,6 @@ const getSelectedCompany = computed(() => {
   return companyStore.selectedCompany
 })
 
-// const dateRangeUrl = computed(() => {
-//   return `${siteURL.value}?from_date=${moment(formData.from_date).format(
-//     'YYYY-MM-DD'
-//   )}&to_date=${moment(formData.to_date).format('YYYY-MM-DD')}&show_individual_expenses=${formData.show_individual_expenses}`
-// })
 
 const categoryDateRangeUrl = computed(() => {
   return `${categorySiteURL.value}?from_date=${moment(
@@ -170,10 +166,7 @@ const itemDaterangeUrl = computed(() => {
   )}&to_date=${moment(formData.to_date).format('YYYY-MM-DD')}`
 })
 
-
 onMounted(() => {
-  // siteURL.value = `/reports/expenses/${getSelectedCompany.value.unique_hash}`
-  // url.value = dateRangeUrl.value
 
   categorySiteURL.value = `/reports/expenses/categories/${getSelectedCompany.value.unique_hash}`
   itemsSiteURL.value = `/reports/expenses/items/${getSelectedCompany.value.unique_hash}`
@@ -274,12 +267,23 @@ function getReports() {
   return true
 }
 
-function downloadReport() {
+function downloadReportPDF() {
   if (!getReports()) {
     return false
   }
 
-  window.open(getReportUrl.value + '&download=true')
+  window.open(getReportUrl.value + '&download=true&pdf=true')
+  setTimeout(() => {
+    url.value = dateRangeUrl.value
+  }, 200)
+}
+
+function downloadReportCSV() {
+  if (!getReports()) {
+    return false
+  }
+
+  window.open(getReportUrl.value + '&download=true&csv=true')
   setTimeout(() => {
     url.value = dateRangeUrl.value
   }, 200)

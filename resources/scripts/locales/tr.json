@@ -738,6 +738,7 @@
     "paid": "Ödendi",
     "unpaid": "Ödenmemiş",
     "download_pdf": "PDF indir",
+    "download_csv": "CSV indir",
     "view_pdf": "PDF Görüntüle",
     "update_report": "Raporu Güncelle",
     "report": "Rapor | Raporlar",

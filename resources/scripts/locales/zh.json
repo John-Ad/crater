@@ -738,6 +738,7 @@
     "paid": "已付款",
     "unpaid": "未付款",
     "download_pdf": "下載 PDF",
+    "download_csv": "下載 CSV",
     "view_pdf": "查閱PDF",
     "update_report": "更新報告",
     "report": "報告 | 報告",

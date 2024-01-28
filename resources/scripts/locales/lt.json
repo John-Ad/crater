@@ -738,6 +738,7 @@
     "paid": "Apmokėta",
     "unpaid": "Neapmokėta",
     "download_pdf": "Atsiųsti PDF",
+    "download_csv": "Atsiųsti CSV",
     "view_pdf": "Peržiūrėti PDF",
     "update_report": "Atnaujinti Ataskaitą",
     "report": "Ataskaita | Ataskaitos",

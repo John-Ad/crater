@@ -521,6 +521,7 @@
     "paid": "유료",
     "unpaid": "미지급",
     "download_pdf": "PDF 다운로드",
+    "download_csv": "CSV 다운로드",
     "view_pdf": "PDF보기",
     "update_report": "보고서 업데이트",
     "report": "신고 | 보고서",
