@@ -103,26 +103,24 @@ class ItemSalesReportController extends Controller
     private function downloadCSV($invoiceItems, $from_date, $to_date, $totalAmount, $currency, $company)
     {
         $csvFileName = 'salesByItem.csv';
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
-        ];
 
-        $handle = fopen('php://output', 'w');
-        fputcsv($handle, [$company->name, '']);
-        fputcsv($handle, [trans('pdf_item_sales_label'), $from_date . ' - ' . $to_date]);
-        fputcsv($handle, ['', '']);
-        fputcsv($handle, ['Item', 'Amount']);
+        return response()->streamDownload(function () use ($invoiceItems, $from_date, $to_date, $totalAmount, $currency, $company) {
 
-        foreach ($invoiceItems as $item) {
-            fputcsv($handle, [$item->name, format_money($item->total_amount, $currency)]);
-        }
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [$company->name, '']);
+            fputcsv($handle, [trans('pdf_item_sales_label'), $from_date . ' - ' . $to_date]);
+            fputcsv($handle, ['', '']);
+            fputcsv($handle, ['Item', 'Amount']);
 
-        fputcsv($handle, ['----', '----']);
-        fputcsv($handle, ['Total', format_money($totalAmount, $currency)]);
+            foreach ($invoiceItems as $item) {
+                fputcsv($handle, [$item->name, format_money($item->total_amount, $currency)]);
+            }
 
-        fclose($handle);
+            fputcsv($handle, ['----', '----']);
+            fputcsv($handle, ['Total', format_money($totalAmount, $currency)]);
 
-        return Response::make('', 200, $headers);
+            fclose($handle);
+
+        }, $csvFileName);
     }
 }

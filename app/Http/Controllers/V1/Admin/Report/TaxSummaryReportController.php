@@ -95,26 +95,24 @@ class TaxSummaryReportController extends Controller
     private function downloadCSV($taxTypes, $from_date, $to_date, $totalAmount, $currency, $company)
     {
         $csvFileName = 'taxSummary.csv';
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
-        ];
 
-        $handle = fopen('php://output', 'w');
-        fputcsv($handle, [$company->name, '']);
-        fputcsv($handle, [trans('pdf_tax_summery_label'), $from_date . ' - ' . $to_date]);
-        fputcsv($handle, ['', '']);
-        fputcsv($handle, ['Name', 'Amount']);
+        return response()->streamDownload(function () use ($taxTypes, $from_date, $to_date, $totalAmount, $currency, $company) {
 
-        foreach ($taxTypes as $tax) {
-            fputcsv($handle, [$tax->taxType->name, format_money($tax->total_tax_amount, $currency)]);
-        }
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [$company->name, '']);
+            fputcsv($handle, [trans('pdf_tax_summery_label'), $from_date . ' - ' . $to_date]);
+            fputcsv($handle, ['', '']);
+            fputcsv($handle, ['Name', 'Amount']);
 
-        fputcsv($handle, ['----', '----']);
-        fputcsv($handle, ['Total', format_money($totalAmount, $currency)]);
+            foreach ($taxTypes as $tax) {
+                fputcsv($handle, [$tax->taxType->name, format_money($tax->total_tax_amount, $currency)]);
+            }
 
-        fclose($handle);
+            fputcsv($handle, ['----', '----']);
+            fputcsv($handle, ['Total', format_money($totalAmount, $currency)]);
 
-        return Response::make('', 200, $headers);
+            fclose($handle);
+
+        }, $csvFileName);
     }
 }

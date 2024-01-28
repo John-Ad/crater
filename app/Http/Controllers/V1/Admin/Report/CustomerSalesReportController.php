@@ -119,37 +119,33 @@ class CustomerSalesReportController extends Controller
      */
     private function downloadCSV($customers, $from_date, $to_date, $totalAmount, $currency, $company)
     {
-        $csvFileName = 'salesByCustomer.csv';
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
-        ];
+        return response()->streamDownload(function () use ($customers, $from_date, $to_date, $totalAmount, $currency, $company) {
 
-        $handle = fopen('php://output', 'w');
-        fputcsv($handle, [$company->name, '', '', '']);
-        fputcsv($handle, [trans('pdf_customer_sales_report'), $from_date . ' - ' . $to_date]);
-        fputcsv($handle, ['', '', '', '']);
-        fputcsv($handle, ['Customer', 'Date', 'Invoice Number', 'Amount']);
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [$company->name, '', '', '']);
+            fputcsv($handle, [trans('pdf_customer_sales_report'), $from_date . ' - ' . $to_date]);
+            fputcsv($handle, ['', '', '', '']);
+            fputcsv($handle, ['Customer', 'Date', 'Invoice Number', 'Amount']);
 
-        foreach ($customers as $customer) {
-            $index = 0;
-            foreach ($customer->invoices as $invoice) {
-                $row = [$invoice->formattedInvoiceDate, $invoice->invoice_number, format_money($invoice->base_total, $currency)];
-                if ($index == 0) {
-                    array_unshift($row, $customer->name);
-                } else {
-                    array_unshift($row, '');
+            foreach ($customers as $customer) {
+                $index = 0;
+                foreach ($customer->invoices as $invoice) {
+                    $row = [$invoice->formattedInvoiceDate, $invoice->invoice_number, format_money($invoice->base_total, $currency)];
+                    if ($index == 0) {
+                        array_unshift($row, $customer->name);
+                    } else {
+                        array_unshift($row, '');
+                    }
+                    fputcsv($handle, $row);
+                    $index++;
                 }
-                fputcsv($handle, $row);
-                $index++;
             }
-        }
 
-        fputcsv($handle, ['----', '----', '----', '----']);
-        fputcsv($handle, ['Total', '', '', format_money($totalAmount, $currency)]);
+            fputcsv($handle, ['----', '----', '----', '----']);
+            fputcsv($handle, ['Total', '', '', format_money($totalAmount, $currency)]);
 
-        fclose($handle);
+            fclose($handle);
 
-        return Response::make('', 200, $headers);
+        }, 'customer-sales-report.csv');
     }
 }

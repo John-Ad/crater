@@ -105,27 +105,22 @@ class CategoryExpensesReportController extends Controller
      */
     private function downloadCSV($expenseCategories, $from_date, $to_date, $totalAmount, $currency, $company)
     {
-        $csvFileName = 'expensesByCategory.csv';
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
-        ];
+        return response()->streamDownload(function () use ($expenseCategories, $from_date, $to_date, $totalAmount, $currency, $company) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [$company->name, '']);
+            fputcsv($handle, [trans('pdf_expense_by_category_report_label'), $from_date . ' - ' . $to_date]);
+            fputcsv($handle, ['', '']);
+            fputcsv($handle, ['Category', 'Total Amount']);
 
-        $handle = fopen('php://output', 'w');
-        fputcsv($handle, [$company->name, '']);
-        fputcsv($handle, [trans('pdf_expense_by_category_report_label'), $from_date . ' - ' . $to_date]);
-        fputcsv($handle, ['', '']);
-        fputcsv($handle, ['Category', 'Total Amount']);
+            foreach ($expenseCategories as $expenseCategory) {
+                fputcsv($handle, [$expenseCategory->category->name, format_money($expenseCategory->total_amount, $currency)]);
+            }
 
-        foreach ($expenseCategories as $expenseCategory) {
-            fputcsv($handle, [$expenseCategory->category->name, format_money($expenseCategory->total_amount, $currency)]);
-        }
+            fputcsv($handle, ['----', '----']);
+            fputcsv($handle, ['Total', format_money($totalAmount, $currency)]);
 
-        fputcsv($handle, ['----', '----']);
-        fputcsv($handle, ['Total', format_money($totalAmount, $currency)]);
+            fclose($handle);
 
-        fclose($handle);
-
-        return Response::make('', 200, $headers);
+        }, 'expensesByCategory.csv');
     }
 }

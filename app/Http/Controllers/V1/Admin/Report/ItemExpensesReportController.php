@@ -106,26 +106,24 @@ class ItemExpensesReportController extends Controller
     private function downloadCSV($expenses, $from_date, $to_date, $totalAmount, $currency, $company)
     {
         $csvFileName = 'expensesByItem.csv';
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
-        ];
 
-        $handle = fopen('php://output', 'w');
-        fputcsv($handle, [$company->name, '', '', '']);
-        fputcsv($handle, ['', '', '', '']);
-        fputcsv($handle, [trans('pdf_expense_by_item_report_label'), $from_date . ' - ' . $to_date]);
-        fputcsv($handle, ['Date', 'Category', 'Notes', 'Total Amount']);
+        return response()->streamDownload(function () use ($expenses, $from_date, $to_date, $totalAmount, $currency, $company) {
 
-        foreach ($expenses as $expense) {
-            fputcsv($handle, [$expense->getFormattedExpenseDateAttribute($expense->expense_date), $expense->category->name, $expense->notes, format_money($expense->amount, $currency)]);
-        }
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [$company->name, '', '', '']);
+            fputcsv($handle, ['', '', '', '']);
+            fputcsv($handle, [trans('pdf_expense_by_item_report_label'), $from_date . ' - ' . $to_date]);
+            fputcsv($handle, ['Date', 'Category', 'Notes', 'Total Amount']);
 
-        fputcsv($handle, ['----', '----', '----', '----']);
-        fputcsv($handle, ['Total', '', '', format_money($totalAmount, $currency)]);
+            foreach ($expenses as $expense) {
+                fputcsv($handle, [$expense->getFormattedExpenseDateAttribute($expense->expense_date), $expense->category->name, $expense->notes, format_money($expense->amount, $currency)]);
+            }
 
-        fclose($handle);
+            fputcsv($handle, ['----', '----', '----', '----']);
+            fputcsv($handle, ['Total', '', '', format_money($totalAmount, $currency)]);
 
-        return Response::make('', 200, $headers);
+            fclose($handle);
+
+        }, $csvFileName);
     }
 }
