@@ -79,7 +79,7 @@ import { useGlobalStore } from '@/scripts/admin/stores/global'
 const { t } = useI18n()
 const globalStore = useGlobalStore()
 
-globalStore.downloadReportPDF = downloadReport
+globalStore.downloadReportPDF = downloadReportPDF
 globalStore.downloadReportCSV = downloadReportCSV
 
 const dateRange = reactive([
@@ -250,7 +250,7 @@ function getReports() {
   return true
 }
 
-function downloadReport() {
+function downloadReportPDF() {
   if (!getReports()) {
     return false
   }
