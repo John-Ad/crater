@@ -6,11 +6,17 @@
         <BaseBreadcrumbItem :title="$tc('reports.report', 2)" to="/admin/reports" active />
       </BaseBreadcrumb>
       <template #actions>
-        <BaseButton variant="primary" class="ml-4" @click="onDownload">
+        <BaseButton variant="primary" class="ml-4" @click="onDownloadPDF">
           <template #left="slotProps">
             <BaseIcon name="DownloadIcon" :class="slotProps.class" />
           </template>
           {{ $t('reports.download_pdf') }}
+        </BaseButton>
+        <BaseButton variant="primary" class="ml-4" @click="onDownloadCSV">
+          <template #left="slotProps">
+            <BaseIcon name="DownloadIcon" :class="slotProps.class" />
+          </template>
+          {{ $t('reports.download_csv') }}
         </BaseButton>
       </template>
     </BasePageHeader>
@@ -43,7 +49,10 @@ import { useGlobalStore } from '@/scripts/admin/stores/global'
 
 const globalStore = useGlobalStore()
 
-function onDownload() {
+function onDownloadPDF() {
   globalStore.downloadReportPDF()
+}
+function onDownloadCSV() {
+  globalStore.downloadReportCSV();
 }
 </script>

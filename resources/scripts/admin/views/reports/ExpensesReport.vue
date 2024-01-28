@@ -1,6 +1,5 @@
 <template>
   <div class="grid gap-8 md:grid-cols-12 pt-10">
-    <h1>hello world</h1>
     <div class="col-span-8 md:col-span-4">
       <BaseInputGroup :label="$t('reports.sales.date_range')" class="col-span-12 md:col-span-8">
         <BaseMultiselect v-model="selectedRange" :options="dateRange" value-prop="key" track-by="key" label="label" object
@@ -83,7 +82,8 @@ const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
 const { t } = useI18n()
 
-globalStore.downloadReportPDF = downloadReport
+globalStore.downloadReportPDF = downloadReportPDF
+globalStore.downloadReportCSV = downloadReportCSV
 
 const dateRange = reactive([
   {
@@ -267,12 +267,23 @@ function getReports() {
   return true
 }
 
-function downloadReport() {
+function downloadReportPDF() {
   if (!getReports()) {
     return false
   }
 
-  window.open(getReportUrl.value + '&download=true')
+  window.open(getReportUrl.value + '&download=true&pdf=true')
+  setTimeout(() => {
+    url.value = dateRangeUrl.value
+  }, 200)
+}
+
+function downloadReportCSV() {
+  if (!getReports()) {
+    return false
+  }
+
+  window.open(getReportUrl.value + '&download=true&csv=true')
   setTimeout(() => {
     url.value = dateRangeUrl.value
   }, 200)

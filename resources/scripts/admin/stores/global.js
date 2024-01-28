@@ -35,8 +35,9 @@ export const useGlobalStore = (useWindow = false) => {
       isSidebarOpen: false,
       areCurrenciesLoading: false,
 
-      // download 
+      // download reports
       downloadReportPDF: null,
+      downloadReportCSV: null,
     }),
 
     getters: {
