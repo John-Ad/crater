@@ -80,6 +80,7 @@ const { t } = useI18n()
 const globalStore = useGlobalStore()
 
 globalStore.downloadReportPDF = downloadReport
+globalStore.downloadReportCSV = downloadReportCSV
 
 const dateRange = reactive([
   {
@@ -256,6 +257,22 @@ function downloadReport() {
 
   window.open(getReportUrl.value + '&download=true')
 
+  setTimeout(() => {
+    if (selectedType.value === 'By Customer') {
+      url.value = customerDateRangeUrl.value
+      return true
+    }
+    url.value = itemDaterangeUrl.value
+    return true
+  }, 200)
+}
+
+function downloadReportCSV() {
+  if (!getReports()) {
+    return false
+  }
+
+  window.open(getReportUrl.value + '&download=true&csv=true')
   setTimeout(() => {
     if (selectedType.value === 'By Customer') {
       url.value = customerDateRangeUrl.value

@@ -8,6 +8,7 @@ use Crater\Models\Company;
 use Crater\Models\Currency;
 use Crater\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Crater\Models\CompanySetting;
 use Illuminate\Support\Facades\App;
 use Crater\Http\Controllers\Controller;
@@ -126,8 +127,8 @@ class CustomerSalesReportController extends Controller
 
         $handle = fopen('php://output', 'w');
         fputcsv($handle, [$company->name, '', '', '']);
-        fputcsv($handle, ['', '', '', '']);
         fputcsv($handle, [trans('pdf_customer_sales_report'), $from_date . ' - ' . $to_date]);
+        fputcsv($handle, ['', '', '', '']);
         fputcsv($handle, ['Customer', 'Date', 'Invoice Number', 'Amount']);
 
         foreach ($customers as $customer) {
