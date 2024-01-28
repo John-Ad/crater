@@ -113,8 +113,9 @@ class CategoryExpensesReportController extends Controller
 
         $handle = fopen('php://output', 'w');
         fputcsv($handle, [$company->name, '']);
-        fputcsv($handle, [trans('pdf_expense_by_item_report_label'), $from_date . ' - ' . $to_date]);
-        fputcsv($handle, ['Category', 'Total Amount'], ',', '');
+        fputcsv($handle, [trans('pdf_expense_by_category_report_label'), $from_date . ' - ' . $to_date]);
+        fputcsv($handle, ['', '']);
+        fputcsv($handle, ['Category', 'Total Amount']);
 
         foreach ($expenseCategories as $expenseCategory) {
             fputcsv($handle, [$expenseCategory->category->name, format_money($expenseCategory->total_amount, $currency)]);
