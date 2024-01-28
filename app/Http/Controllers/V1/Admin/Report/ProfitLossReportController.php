@@ -112,31 +112,28 @@ class ProfitLossReportController extends Controller
     private function downloadCSV($totalPayments, $expenseCategories, $from_date, $to_date, $totalExpenses, $currency, $company)
     {
         $csvFileName = 'profitLoss.csv';
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
-        ];
 
-        $handle = fopen('php://output', 'w');
-        fputcsv($handle, [$company->name, '']);
-        fputcsv($handle, [trans('pdf_profit_loss_label'), $from_date . ' - ' . $to_date]);
-        fputcsv($handle, ['', '']);
-        fputcsv($handle, [trans('pdf_income_label'), format_money($totalPayments, $currency)]);
-        fputcsv($handle, ['', '']);
-        fputcsv($handle, [trans('pdf_expenses_label'), '']);
-        fputcsv($handle, ['Category', 'Amount']);
-        foreach ($expenseCategories as $expenseCategory) {
-            fputcsv($handle, [$expenseCategory->category->name, format_money($expenseCategory->total_amount, $currency)]);
-        }
+        return response()->streamDownload(function () use ($totalPayments, $expenseCategories, $from_date, $to_date, $totalExpenses, $currency, $company) {
 
-        fputcsv($handle, ['----', '----']);
-        fputcsv($handle, ['Total', format_money($totalExpenses, $currency)]);
-        fputcsv($handle, ['', '']);
-        fputcsv($handle, [trans('pdf_net_profit_label'), format_money($totalPayments - $totalExpenses, $currency)]);
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [$company->name, '']);
+            fputcsv($handle, [trans('pdf_profit_loss_label'), $from_date . ' - ' . $to_date]);
+            fputcsv($handle, ['', '']);
+            fputcsv($handle, [trans('pdf_income_label'), format_money($totalPayments, $currency)]);
+            fputcsv($handle, ['', '']);
+            fputcsv($handle, [trans('pdf_expenses_label'), '']);
+            fputcsv($handle, ['Category', 'Amount']);
+            foreach ($expenseCategories as $expenseCategory) {
+                fputcsv($handle, [$expenseCategory->category->name, format_money($expenseCategory->total_amount, $currency)]);
+            }
 
+            fputcsv($handle, ['----', '----']);
+            fputcsv($handle, ['Total', format_money($totalExpenses, $currency)]);
+            fputcsv($handle, ['', '']);
+            fputcsv($handle, [trans('pdf_net_profit_label'), format_money($totalPayments - $totalExpenses, $currency)]);
 
-        fclose($handle);
+            fclose($handle);
 
-        return Response::make('', 200, $headers);
+        }, $csvFileName);
     }
 }
