@@ -10,6 +10,7 @@ use Crater\Models\Currency;
 use Illuminate\Http\Request;
 use Crater\Models\CompanySetting;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Response;
 use Crater\Http\Controllers\Controller;
 
 class TaxSummaryReportController extends Controller
@@ -27,7 +28,7 @@ class TaxSummaryReportController extends Controller
 
         $this->authorize('view report', $company);
 
-        $locale = CompanySetting::getSetting('language',  $company->id);
+        $locale = CompanySetting::getSetting('language', $company->id);
 
         App::setLocale($locale);
 
@@ -47,6 +48,10 @@ class TaxSummaryReportController extends Controller
         $to_date = Carbon::createFromFormat('Y-m-d', $request->to_date)->format($dateFormat);
         $currency = Currency::findOrFail(CompanySetting::getSetting('currency', $company->id));
 
+        // download csv
+        if ($request->has('download') && $request->has("csv")) {
+            return $this->downloadCSV($taxTypes, $from_date, $to_date, $totalAmount, $currency, $company);
+        }
 
         $colors = [
             'primary_text_color',
@@ -85,5 +90,31 @@ class TaxSummaryReportController extends Controller
         }
 
         return $pdf->stream();
+    }
+
+    private function downloadCSV($taxTypes, $from_date, $to_date, $totalAmount, $currency, $company)
+    {
+        $csvFileName = 'taxSummary.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
+        ];
+
+        $handle = fopen('php://output', 'w');
+        fputcsv($handle, [$company->name, '']);
+        fputcsv($handle, [trans('pdf_tax_summery_label'), $from_date . ' - ' . $to_date]);
+        fputcsv($handle, ['', '']);
+        fputcsv($handle, ['Name', 'Amount']);
+
+        foreach ($taxTypes as $tax) {
+            fputcsv($handle, [$tax->taxType->name, format_money($tax->total_tax_amount, $currency)]);
+        }
+
+        fputcsv($handle, ['----', '----']);
+        fputcsv($handle, ['Total', format_money($totalAmount, $currency)]);
+
+        fclose($handle);
+
+        return Response::make('', 200, $headers);
     }
 }
