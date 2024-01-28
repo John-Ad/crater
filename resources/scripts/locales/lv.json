@@ -738,6 +738,7 @@
     "paid": "Apmaksāts",
     "unpaid": "Neapmaksāts",
     "download_pdf": "Lejupielādēt PDF",
+    "download_csv": "Lejupielādēt CSV",
     "view_pdf": "Apskatīt PDF",
     "update_report": "Labot atskaiti",
     "report": "Atskaite | Atskaites",

@@ -52,7 +52,7 @@
   </BaseDropdown>
 </template>
 
-<script setup>
+<script setup >
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useDialogStore } from '@/scripts/stores/dialog'

@@ -738,6 +738,7 @@
     "paid": "Plaćeno",
     "unpaid": "Neplaćeno",
     "download_pdf": "Preuzmi PDF",
+    "download_csv": "Preuzmi CSV",
     "view_pdf": "Pogledaj PDF",
     "update_report": "Ažuriraj Izveštaj",
     "report": "Izveštaj | Izveštaji",

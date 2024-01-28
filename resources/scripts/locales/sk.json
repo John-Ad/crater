@@ -738,6 +738,7 @@
     "paid": "Zaplatená",
     "unpaid": "Nezaplatená",
     "download_pdf": "Stiahnuť PDF",
+    "download_csv": "Stiahnuť CSV",
     "view_pdf": "Zobraziť PDF",
     "update_report": "Aktualizovať Report",
     "report": "Report | Reporty",

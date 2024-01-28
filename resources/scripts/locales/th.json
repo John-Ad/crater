@@ -734,6 +734,7 @@
     "paid": "จ่ายแล้ว",
     "unpaid": "ยังไม่ได้ชำระ",
     "download_pdf": "ดาวน์โหลดไฟล์ PDF",
+    "download_csv": "ดาวน์โหลดไฟล์ CSV",
     "view_pdf": "ดูไฟล์ PDF",
     "update_report": "รายงานการอัพเดต",
     "report": "รายงาน | รายงาน",

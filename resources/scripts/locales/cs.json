@@ -738,6 +738,7 @@
     "paid": "Zaplaceno",
     "unpaid": "Nezaplaceno",
     "download_pdf": "Stáhnout PDF",
+    "download_csv": "Stáhnout CSV",
     "view_pdf": "Zobrazit PDF",
     "update_report": "Upravit hlášení",
     "report": "Hlášení | Hlášení",

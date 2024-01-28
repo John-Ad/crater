@@ -738,6 +738,7 @@
     "paid": "Betaald",
     "unpaid": "Onbetaald",
     "download_pdf": "Download PDF",
+    "download_csv": "Download CSV",
     "view_pdf": "Bekijk PDF",
     "update_report": "Rapport bijwerken",
     "report": "Verslag | Rapporten",

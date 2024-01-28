@@ -1,19 +1,9 @@
 <template>
   <div class="grid gap-8 md:grid-cols-12 pt-10">
     <div class="col-span-8 md:col-span-4">
-      <BaseInputGroup
-        :label="$t('reports.sales.date_range')"
-        class="col-span-12 md:col-span-8"
-      >
-        <BaseMultiselect
-          v-model="selectedRange"
-          :options="dateRange"
-          value-prop="key"
-          track-by="key"
-          label="label"
-          object
-          @update:modelValue="onChangeDateRange"
-        />
+      <BaseInputGroup :label="$t('reports.sales.date_range')" class="col-span-12 md:col-span-8">
+        <BaseMultiselect v-model="selectedRange" :options="dateRange" value-prop="key" track-by="key" label="label" object
+          @update:modelValue="onChangeDateRange" />
       </BaseInputGroup>
 
       <div class="flex flex-col my-6 lg:space-x-3 lg:flex-row">
@@ -21,61 +11,42 @@
           <BaseDatePicker v-model="formData.from_date" />
         </BaseInputGroup>
 
-        <div
-          class="
+        <div class="
             hidden
             w-5
             h-0
             mx-4
             border border-gray-400 border-solid
             xl:block
-          "
-          style="margin-top: 2.5rem"
-        />
+          " style="margin-top: 2.5rem" />
 
         <BaseInputGroup :label="$t('reports.sales.to_date')">
           <BaseDatePicker v-model="formData.to_date" />
         </BaseInputGroup>
       </div>
 
-      <BaseInputGroup
-        :label="$t('reports.sales.report_type')"
-        class="col-span-12 md:col-span-8"
-      >
-        <BaseMultiselect
-          v-model="selectedType"
-          :options="reportTypes"
-          :placeholder="$t('reports.sales.report_type')"
-          class="mt-1"
-          @update:modelValue="getInitialReport"
-        />
+      <BaseInputGroup :label="$t('reports.sales.report_type')" class="col-span-12 md:col-span-8">
+        <BaseMultiselect v-model="selectedType" :options="reportTypes" :placeholder="$t('reports.sales.report_type')"
+          class="mt-1" @update:modelValue="getInitialReport" />
       </BaseInputGroup>
 
-      <BaseButton
-        variant="primary-outline"
-        class="content-center hidden mt-0 w-md md:flex md:mt-8"
-        type="submit"
-        @click.prevent="getReports"
-      >
+      <BaseButton variant="primary-outline" class="content-center hidden mt-0 w-md md:flex md:mt-8" type="submit"
+        @click.prevent="getReports">
         {{ $t('reports.update_report') }}
       </BaseButton>
     </div>
 
     <div class="col-span-8">
-      <iframe
-        :src="getReportUrl"
-        class="
+      <iframe :src="getReportUrl" class="
           hidden
           w-full
           h-screen
           border-gray-100 border-solid
           rounded
           md:flex
-        "
-      />
+        " />
 
-      <a
-        class="
+      <a class="
           flex
           items-center
           justify-center
@@ -90,9 +61,7 @@
           whitespace-nowrap
           md:hidden
           bg-primary-500
-        "
-        @click="viewReportsPDF"
-      >
+        " @click="viewReportsPDF">
         <BaseIcon name="DocumentTextIcon" class="h-5 mr-2" />
         <span>{{ $t('reports.view_pdf') }}</span>
       </a>
@@ -110,7 +79,7 @@ import { useGlobalStore } from '@/scripts/admin/stores/global'
 const { t } = useI18n()
 const globalStore = useGlobalStore()
 
-globalStore.downloadReport = downloadReport
+globalStore.downloadReportPDF = downloadReport
 
 const dateRange = reactive([
   {

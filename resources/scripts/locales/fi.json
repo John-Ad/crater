@@ -738,6 +738,7 @@
     "paid": "Maksettu",
     "unpaid": "Maksamattomat",
     "download_pdf": "Lataa PDF",
+    "download_csv": "Lataa CSV",
     "view_pdf": "Katso PDF",
     "update_report": "Päivitä Raportti",
     "report": "Raportti | Raportit",

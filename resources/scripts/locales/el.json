@@ -738,6 +738,7 @@
     "paid": "Εξοφλημένο",
     "unpaid": "Ανεξόφλητο",
     "download_pdf": "Λήψη PDF",
+    "download_csv": "Λήψη CSV",
     "view_pdf": "Προβολή PDF",
     "update_report": "Ενημέρωση Αναφοράς",
     "report": "Αναφορά | Αναφορές",
